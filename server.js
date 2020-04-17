@@ -69,6 +69,7 @@ app.delete("/api/notes/:id", function (req, res) {
     return res.send("Deleted");
 });
 
+// Read notes from db.json
 getNotes();
 
 // start server
