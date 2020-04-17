@@ -11,8 +11,21 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Routes
+// Get current notes
+function getNotes() {
+    fs.readFile("db/db.json", "utf8", function (err, data) {
+        if (err) {
+            return error(err);
+        }
+        currentNotes.push(...JSON.parse(data));
+    })
+}
 
+// initialize notes
+var currentNotes = [];
+
+
+// Routes
 app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
 });
@@ -27,20 +40,36 @@ app.get("/api/notes", function (req, res) {
         if (err) {
             return error(err);
         }
-        return res.json(JSON.parse(data));
+        return res.json(currentNotes);
     });
 });
 
 app.post("/api/notes", function (req, res) {
     var updatedNotes = (req.body);
-    console.log(updatedNotes);
-    fs.writeFile("db/db.json", JSON.stringify(updatedNotes), function (err) {
+
+    currentNotes.push({...updatedNotes, id: Date.now()});
+
+    fs.writeFile("db/db.json", JSON.stringify(currentNotes, null, 2), function (err) {
+        if (err) {
+            error(err);
+        }
+        return res.send("Written");
+    });
+});
+
+app.delete("/api/notes/:id", function (req, res) {
+    var chosen = req.params.id;
+    console.log(chosen);
+    currentNotes = currentNotes.filter(item => item.id != chosen);
+    fs.writeFile("db/db.json", JSON.stringify(currentNotes, null, 2), function (err) {
         if (err) {
             error(err);
         }
     });
+    return res.send("Deleted");
 });
 
+getNotes();
 
 // start server
 app.listen(PORT, function () {
