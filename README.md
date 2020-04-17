@@ -18,11 +18,6 @@ node server.js
     
 ## Credits
 The front end of this application was written by Trilogy Education serviecs. I (Ryan Gautier) wrote server.js file
-    
-
-    
-## Screenshot
-![Screenshot of Application](./screenshot.png)
 
 ## GIF of Application
 ![GIF of Application](./NotesAppGif.gif)
